@@ -18,7 +18,7 @@ export async function OverviewBudgets() {
       <div className="flex flex-col md:flex-row gap-8 items-center">
         {/* Simple Chart Placeholder */}
         <div className="relative h-40 w-40 flex items-center justify-center">
-          <svg className="h-full w-full" viewBox="0 0 36 36">
+          <svg className="h-full w-full" viewBox="0 0 36 36" aria-hidden="true">
             <path
               className="text-slate-100"
               strokeDasharray="100, 100"

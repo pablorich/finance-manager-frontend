@@ -1,14 +1,10 @@
 import CacheStatus from '@/components/ui/CacheStatus';
-import { headers } from 'next/headers';
 
 // Force dynamic rendering for this route
 export const dynamic = 'force-dynamic';
 
 async function getDynamicData() {
-  const host = (await headers()).get('host') || 'localhost:3000';
-  const protocol = host.includes('localhost') ? 'http' : 'https';
-  
-  const res = await fetch(`${protocol}://${host}/api/cache-demo`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'}/cache-demo`, {
     // We can also use cache: 'no-store' for fetch-level dynamic behavior
     cache: 'no-store',
   });

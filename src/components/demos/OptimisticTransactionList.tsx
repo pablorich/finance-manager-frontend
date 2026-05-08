@@ -1,7 +1,7 @@
 'use client';
 
 import { useOptimistic, startTransition, useEffect } from 'react';
-import { Transaction } from '@/lib/types';
+import { Transaction } from '@/lib/data';
 import { deleteTransaction } from '@/lib/actions';
 import Avatar from '@/components/ui/Avatar';
 

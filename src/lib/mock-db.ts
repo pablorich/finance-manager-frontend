@@ -1,4 +1,4 @@
-import { Transaction, Budget, Pot, Bill, Balance } from './data';
+import type { Transaction, Budget, Pot, Bill, Balance } from './data';
 
 class MockDatabase {
   private initialTransactions: Transaction[] = [
@@ -55,7 +55,7 @@ class MockDatabase {
   addTransaction(transaction: Omit<Transaction, 'id' | 'date'>) {
     const newTransaction: Transaction = {
       ...transaction,
-      id: Math.random().toString(36).substring(2, 9),
+      id: crypto.randomUUID(),
       date: new Date().toISOString().split('T')[0],
     };
     this.transactions.unshift(newTransaction);

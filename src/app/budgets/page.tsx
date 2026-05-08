@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { PageHeader } from "@/components/PageHeader";
 import { getUserSettings, getBudgetsWithSettings } from "@/lib/data";
@@ -9,6 +10,11 @@ import { BudgetSkeleton } from "@/components/ui/Skeletons";
  * In this page, we demonstrate a case where we MUST wait for the first fetch
  * (user settings) to complete before we can start the second fetch (budgets).
  */
+export const metadata: Metadata = {
+  title: "Budgets | Finance Manager",
+  description: "Track budget limits, spending, and remaining balances.",
+};
+
 export default async function BudgetsPage() {
   return (
     <div className="space-y-6">

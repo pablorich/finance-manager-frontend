@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { PageHeader } from "@/components/PageHeader";
 import { OverviewBalance } from "@/components/overview/OverviewBalance";
@@ -6,6 +7,11 @@ import { OverviewBudgets } from "@/components/overview/OverviewBudgets";
 import { BalanceSkeleton, TransactionRowSkeleton, BudgetSkeleton } from "@/components/ui/Skeletons";
 
 export const revalidate = 60;
+
+export const metadata: Metadata = {
+  title: "Overview | Finance Manager",
+  description: "View your financial overview, recent transactions, and budgets.",
+};
 
 export default function OverviewPage() {
   return (

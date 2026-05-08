@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { PageHeader } from "@/components/PageHeader";
 import { getPots } from "@/lib/data";
@@ -6,6 +7,11 @@ import { Skeleton } from "@/components/ui/Skeletons";
 /**
  * Standard Pattern: Simple Async Component with Suspense
  */
+export const metadata: Metadata = {
+  title: "Pots | Finance Manager",
+  description: "See your savings pots and progress toward each target.",
+};
+
 export default async function PotsPage() {
   return (
     <div className="space-y-6">

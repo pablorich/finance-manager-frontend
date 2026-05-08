@@ -1,6 +1,7 @@
 'use client';
 
 import { Transaction, TransactionResponse } from "@/lib/data";
+import { TRANSACTION_CATEGORIES, SORT_OPTIONS } from "@/lib/constants";
 import useSWR from "swr";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
@@ -32,7 +33,7 @@ function DebouncedSearch({ initialValue, onSearch }: { initialValue: string; onS
         onChange={(e) => setValue(e.target.value)}
       />
       <div className="absolute right-3 top-2.5 text-slate-400">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
       </div>
@@ -94,10 +95,9 @@ export function TransactionsContainer({ initialData }: TransactionsContainerProp
                 onChange={(e) => handleParamChange('sort', e.target.value)}
                 className="px-4 py-2 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-slate-900"
               >
-                <option value="Latest">Latest</option>
-                <option value="Oldest">Oldest</option>
-                <option value="Highest">Highest</option>
-                <option value="Lowest">Lowest</option>
+                {SORT_OPTIONS.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
               </select>
             </div>
             
@@ -111,16 +111,9 @@ export function TransactionsContainer({ initialData }: TransactionsContainerProp
                 className="px-4 py-2 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-slate-900"
               >
                 <option value="All Categories">All Categories</option>
-                <option value="Entertainment">Entertainment</option>
-                <option value="Bills">Bills</option>
-                <option value="Groceries">Groceries</option>
-                <option value="Dining Out">Dining Out</option>
-                <option value="Transportation">Transportation</option>
-                <option value="Personal Care">Personal Care</option>
-                <option value="Education">Education</option>
-                <option value="Lifestyle">Lifestyle</option>
-                <option value="Shopping">Shopping</option>
-                <option value="General">General</option>
+                {TRANSACTION_CATEGORIES.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
               </select>
             </div>
           </div>

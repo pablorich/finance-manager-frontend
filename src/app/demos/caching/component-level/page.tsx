@@ -1,11 +1,7 @@
 import CacheStatus from '@/components/ui/CacheStatus';
-import { headers } from 'next/headers';
 
 async function getComponentData(cacheMode: RequestCache) {
-  const host = (await headers()).get('host') || 'localhost:3000';
-  const protocol = host.includes('localhost') ? 'http' : 'https';
-  
-  const res = await fetch(`${protocol}://${host}/api/cache-demo`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'}/cache-demo`, {
     cache: cacheMode,
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);

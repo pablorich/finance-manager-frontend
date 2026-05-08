@@ -3,6 +3,7 @@
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { createTransaction, ActionState } from '@/lib/actions';
+import { TRANSACTION_CATEGORIES } from '@/lib/constants';
 
 declare global {
   interface Window {
@@ -82,6 +83,8 @@ export default function TransactionForm() {
           type="text"
           id="name"
           name="name"
+          required
+          minLength={3}
           placeholder="e.g. Monthly Rent"
           className={`w-full rounded-lg border px-4 py-2 text-sm outline-none focus:border-grey-900 ${
             state.errors?.name ? 'border-red-500' : 'border-grey-300'
@@ -100,6 +103,7 @@ export default function TransactionForm() {
           type="number"
           id="amount"
           name="amount"
+          required
           step="0.01"
           placeholder="e.g. 1500"
           className={`w-full rounded-lg border px-4 py-2 text-sm outline-none focus:border-grey-900 ${
@@ -118,21 +122,16 @@ export default function TransactionForm() {
         <select
           id="category"
           name="category"
+          required
+          defaultValue=""
           className={`w-full rounded-lg border px-4 py-2 text-sm outline-none focus:border-grey-900 ${
             state.errors?.category ? 'border-red-500' : 'border-grey-300'
           }`}
         >
           <option value="">Select Category</option>
-          <option value="Entertainment">Entertainment</option>
-          <option value="Bills">Bills</option>
-          <option value="Groceries">Groceries</option>
-          <option value="Dining Out">Dining Out</option>
-          <option value="Transportation">Transportation</option>
-          <option value="Personal Care">Personal Care</option>
-          <option value="Education">Education</option>
-          <option value="Lifestyle">Lifestyle</option>
-          <option value="Shopping">Shopping</option>
-          <option value="General">General</option>
+          {TRANSACTION_CATEGORIES.map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
         </select>
         {state.errors?.category && (
           <p className="mt-1 text-xs text-red-500">{state.errors.category[0]}</p>

@@ -25,7 +25,7 @@ export default function Avatar({
 
   if (!src || error) {
     return (
-      <div className={containerClasses}>
+      <div className={containerClasses} role="img" aria-label={alt}>
         <span className="text-xs font-bold text-stone-500 uppercase">
           {fallbackText.substring(0, 2)}
         </span>

@@ -25,7 +25,7 @@ export function Sidebar({ className }: { className?: string }) {
         <h1 className="text-2xl font-bold italic">finance</h1>
       </div>
 
-      <nav className="flex flex-1 items-center justify-around px-4 lg:flex-col lg:items-stretch lg:justify-start lg:space-y-2 lg:px-4">
+      <nav id="sidebar-nav" className="flex flex-1 items-center justify-around px-4 lg:flex-col lg:items-stretch lg:justify-start lg:space-y-2 lg:px-4">
         {NAV_ITEMS.map((item) => {
           const isActive = pathname.startsWith(item.href);
           return (
@@ -62,6 +62,9 @@ export function Sidebar({ className }: { className?: string }) {
       {/* Desktop Collapse Toggle */}
       <button 
         onClick={() => setIsCollapsed(!isCollapsed)}
+        aria-expanded={!isCollapsed}
+        aria-controls="sidebar-nav"
+        aria-label={isCollapsed ? 'Expand menu' : 'Minimize menu'}
         className="hidden lg:flex items-center space-x-3 p-8 text-grey-500 hover:text-white transition-colors"
       >
         <div className={cn(

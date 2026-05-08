@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { PageHeader } from "@/components/PageHeader";
 import { getRecurringBills, Bill } from "@/lib/data";
 import { BillSkeleton } from "@/components/ui/Skeletons";
 
 export const revalidate = 60;
+
+export const metadata: Metadata = {
+  title: "Recurring Bills | Finance Manager",
+  description: "Review upcoming and paid recurring bills.",
+};
 
 /**
  * Pedagogical Example: Parallel Fetching with Granular Streaming

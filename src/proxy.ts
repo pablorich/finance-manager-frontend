@@ -18,9 +18,6 @@ import type { NextRequest } from 'next/server';
  */
 
 export function proxy(request: NextRequest) {
-  // 1. Log that the middleware was triggered
-  console.log(`[Middleware] Intercepted request to: ${request.nextUrl.pathname}`);
-
   // 2. Clone the request headers and add our custom 'demo' header per spec
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-middleware-demo', 'active');

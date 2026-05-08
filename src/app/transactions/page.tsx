@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { PageHeader } from "@/components/PageHeader";
 import { TransactionsContainer } from "@/components/transactions/TransactionsContainer";
 import { getTransactions } from "@/lib/data";
@@ -10,6 +11,11 @@ import { getTransactions } from "@/lib/data";
 // [CONCEPT: Dynamic Rendering]
 // Use force-dynamic to always provide fresh transaction data.
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: "Transactions | Finance Manager",
+  description: "Browse and filter your recent transactions.",
+};
 
 export default async function TransactionsPage({
   searchParams,

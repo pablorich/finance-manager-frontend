@@ -1,4 +1,5 @@
 import { mockDb } from './mock-db';
+import { PAGE_SIZE } from './constants';
 
 /**
  * Simulates a randomized delay to mimic real-world network latency.
@@ -48,6 +49,8 @@ export interface Transaction {
   date: string;
   amount: number;
   avatar: string;
+  isNew?: boolean;
+  isPending?: boolean;
 }
 
 export interface TransactionResponse {
@@ -75,9 +78,9 @@ export const getUserSettings = async () => {
   };
 };
 
-export const getBudgetsWithSettings = async (settings: { currency: string; theme: string; budgetExceededAlert: boolean }): Promise<Budget[]> => {
+export const getBudgetsWithSettings = async (_settings: { currency: string; theme: string; budgetExceededAlert: boolean }): Promise<Budget[]> => {
   // Simulate logic dependent on settings
-  console.log(`Fetching budgets using currency: ${settings.currency}`);
+  void _settings;
   await delay();
   return mockDb.getBudgets();
 };
@@ -131,12 +134,11 @@ export const getTransactions = async (
     }
   });
 
-  const pageSize = 10;
   const safePage = Math.max(1, page);
-  const start = (safePage - 1) * pageSize;
-  const transactions = filtered.slice(start, start + pageSize);
+  const start = (safePage - 1) * PAGE_SIZE;
+  const transactions = filtered.slice(start, start + PAGE_SIZE);
   const totalCount = filtered.length;
-  const hasMore = start + pageSize < totalCount;
+  const hasMore = start + PAGE_SIZE < totalCount;
 
   return {
     transactions,
