@@ -32,7 +32,7 @@ export async function OverviewTransactions() {
               <p className={`font-bold ${transaction.amount > 0 ? 'text-green-600' : 'text-slate-900'}`}>
                 {transaction.amount > 0 ? '+' : ''}${Math.abs(transaction.amount).toFixed(2)}
               </p>
-              <p className="text-sm text-slate-500">{new Date(transaction.date).toLocaleDateString()}</p>
+              <p className="text-sm text-slate-500">{new Date(transaction.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}</p>
             </div>
           </div>
         ))}

@@ -34,7 +34,7 @@ export default function CachingLayout({
           <div className="flex flex-col gap-2 border-l border-stone-100 pl-6">
             <h3 className="font-bold text-stone-900 text-sm uppercase tracking-wider">2. ISR (Time-based)</h3>
             <p className="text-xs text-stone-500 leading-normal">
-              Set to <code>revalidate = 10</code>. Refreshing after 10s serves stale data once, 
+              Set to <code>revalidate = 60</code>. Refreshing after 60s serves stale data once, 
               triggers a background update, and shows new data on the <em>next</em> refresh.
             </p>
           </div>
@@ -48,7 +48,7 @@ export default function CachingLayout({
           <div className="flex flex-col gap-2 border-l border-stone-100 pl-6">
             <h3 className="font-bold text-stone-900 text-sm uppercase tracking-wider">4. Cache Status</h3>
             <p className="text-xs text-stone-500 leading-normal">
-              Watch the <strong>CacheStatus</strong> component. It calculates "Data Age" 
+               Watch the <strong>CacheStatus</strong> component. It calculates &quot;Data Age&quot; 
               based on the difference between client and server time.
             </p>
           </div>

@@ -59,7 +59,7 @@ export default async function ProtectedDemoPage() {
             <h2 className="text-xl font-bold mb-4">How it works?</h2>
             <ol className="list-decimal list-inside space-y-3 text-sm">
               <li>Request hits <code className="bg-muted px-1 rounded">/demos/runtimes/protected</code>.</li>
-              <li>Next.js identifies the <code className="bg-muted px-1 rounded">middleware.ts</code> matcher.</li>
+              <li>Next.js identifies the <code className="bg-muted px-1 rounded">proxy.ts</code> matcher.</li>
               <li>Middleware runs in the <strong>Edge Runtime</strong>.</li>
               <li>Custom headers are appended to the request.</li>
               <li>Next.js renders this Server Component and retrieves the headers.</li>

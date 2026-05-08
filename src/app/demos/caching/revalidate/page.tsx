@@ -59,7 +59,7 @@ export default async function ISRPage() {
           <ol className="list-decimal ml-4 space-y-1">
             <li>Establish initial cache by refreshing.</li>
             <li>Wait for the indicator to turn <span className="text-rose-600 font-bold uppercase">Red</span> (after 60s).</li>
-            <li>Refresh once more. You'll see STALE data, but a background update is triggered.</li>
+            <li>Refresh once more. You&apos;ll see STALE data, but a background update is triggered.</li>
             <li>Refresh again. Now you see the NEW data.</li>
           </ol>
         </div>
@@ -67,7 +67,7 @@ export default async function ISRPage() {
         <div>
           <p><strong>Option 2: On-demand Revalidation</strong></p>
           <ol className="list-decimal ml-4 space-y-1">
-            <li>Click "Revalidate Tag". This immediately invalidates anything with the <code>'isr-demo'</code> tag.</li>
+            <li>Click &quot;Revalidate Tag&quot;. This immediately invalidates anything with the <code>&apos;isr-demo&apos;</code> tag.</li>
             <li>On next refresh, you will see NEW data immediately, bypassing the 60s timer.</li>
           </ol>
         </div>

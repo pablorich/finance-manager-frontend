@@ -8,6 +8,7 @@ async function getComponentData(cacheMode: RequestCache) {
   const res = await fetch(`${protocol}://${host}/api/cache-demo`, {
     cache: cacheMode,
   });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }
 
@@ -40,7 +41,7 @@ export default async function ComponentLevelPage() {
             <span className="text-2xl font-mono text-stone-800">{cached.data.value.toFixed(6)}</span>
           </div>
           <p className="text-xs text-stone-500 italic">
-            This component's data is stored in the Data Cache.
+            This component&apos;s data is stored in the Data Cache.
           </p>
         </div>
 

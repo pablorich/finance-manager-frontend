@@ -4,6 +4,10 @@ import Link from "next/link";
 export async function OverviewBudgets() {
   const budgets = await getBudgets();
 
+  const totalSpent = budgets.reduce((sum, b) => sum + b.spent, 0);
+  const totalLimit = budgets.reduce((sum, b) => sum + b.maximum, 0);
+  const spentPercentage = totalLimit > 0 ? Math.min((totalSpent / totalLimit) * 100, 100) : 0;
+
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
       <div className="flex justify-between items-center mb-6">
@@ -25,7 +29,7 @@ export async function OverviewBudgets() {
             />
             <path
               className="text-slate-900"
-              strokeDasharray="75, 100"
+              strokeDasharray={`${spentPercentage}, 100`}
               d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               fill="none"
               stroke="currentColor"
@@ -33,8 +37,8 @@ export async function OverviewBudgets() {
             />
           </svg>
           <div className="absolute flex flex-col items-center">
-            <span className="text-2xl font-bold text-slate-900">$338</span>
-            <span className="text-xs text-slate-500 text-center">of $975 limit</span>
+            <span className="text-2xl font-bold text-slate-900">${totalSpent.toFixed(0)}</span>
+            <span className="text-xs text-slate-500 text-center">of ${totalLimit.toFixed(0)} limit</span>
           </div>
         </div>
 

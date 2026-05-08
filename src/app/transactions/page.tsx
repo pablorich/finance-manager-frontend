@@ -14,13 +14,15 @@ export const dynamic = 'force-dynamic';
 export default async function TransactionsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ query?: string; page?: string }>;
+  searchParams: Promise<{ query?: string; page?: string; category?: string; sort?: string }>;
 }) {
   const resolvedSearchParams = await searchParams;
   const query = resolvedSearchParams?.query || "";
-  const page = parseInt(resolvedSearchParams?.page || "1");
+  const page = parseInt(resolvedSearchParams?.page || "1") || 1;
+  const category = resolvedSearchParams?.category || "All Categories";
+  const sort = resolvedSearchParams?.sort || "Latest";
 
-  const data = await getTransactions(query, page);
+  const data = await getTransactions(query, page, category, sort);
 
   return (
     <div className="space-y-6">

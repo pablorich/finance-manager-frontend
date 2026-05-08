@@ -16,7 +16,7 @@ export async function GET() {
   // Check for the presence of the Next.js Edge Runtime global.
   // In the Edge runtime, 'EdgeRuntime' is defined as a string (e.g., 'edge-runtime').
   // This is a safe way to detect the Edge environment without accessing Node-specific 'process.versions'.
-  // @ts-ignore - 'EdgeRuntime' is a global injected by the Next.js Edge runtime environment.
+  // @ts-expect-error - 'EdgeRuntime' is a global injected by the Next.js Edge runtime environment.
   const isEdge = typeof EdgeRuntime !== 'undefined';
   
   return NextResponse.json({

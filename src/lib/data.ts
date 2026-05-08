@@ -132,7 +132,8 @@ export const getTransactions = async (
   });
 
   const pageSize = 10;
-  const start = (page - 1) * pageSize;
+  const safePage = Math.max(1, page);
+  const start = (safePage - 1) * pageSize;
   const transactions = filtered.slice(start, start + pageSize);
   const totalCount = filtered.length;
   const hasMore = start + pageSize < totalCount;

@@ -13,7 +13,7 @@
 export const getRuntimeInfo = () => {
   // We check for 'EdgeRuntime' which is a reliable global signal in Next.js Edge.
   // We avoid 'process.versions' to prevent build-time errors from the Edge checker.
-  // @ts-ignore - 'EdgeRuntime' is defined in the Edge runtime.
+  // @ts-expect-error - 'EdgeRuntime' is defined in the Edge runtime.
   const isEdge = typeof EdgeRuntime !== 'undefined';
   
   return {

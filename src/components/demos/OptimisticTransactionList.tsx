@@ -42,7 +42,10 @@ export default function OptimisticTransactionList({
   const handleDelete = async (id: string) => {
     startTransition(async () => {
       setOptimisticTransactions({ action: 'delete', payload: id });
-      await deleteTransaction(id);
+      const result = await deleteTransaction(id);
+      if (!result.success) {
+        console.error('Delete failed:', result.message);
+      }
     });
   };
 
@@ -87,7 +90,7 @@ export default function OptimisticTransactionList({
                     {transaction.amount < 0 ? '-' : '+'}${Math.abs(transaction.amount).toFixed(2)}
                   </p>
                   <p className="text-xs text-grey-500">
-                    {new Date(transaction.date).toLocaleDateString()}
+                    {new Date(transaction.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}
                   </p>
                 </div>
                 

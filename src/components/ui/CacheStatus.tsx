@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 import { cn } from '@/lib/utils';
 
 interface CacheStatusProps {
@@ -10,20 +10,15 @@ interface CacheStatusProps {
 }
 
 export default function CacheStatus({ timestamp, label = 'Data Age', revalidate }: CacheStatusProps) {
-  // Use timestamp as initial value to ensure hydration match
-  const [now, setNow] = useState(timestamp);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    setNow(Date.now());
-    const interval = setInterval(() => {
-      setNow(Date.now());
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const effectiveNow = mounted ? now : timestamp;
+  const now = useSyncExternalStore(
+    (onStoreChange) => {
+      const interval = setInterval(onStoreChange, 1000);
+      return () => clearInterval(interval);
+    },
+    () => Date.now(),
+    () => timestamp
+  );
+  const effectiveNow = now !== timestamp ? now : timestamp;
   const secondsAgo = Math.floor((effectiveNow - timestamp) / 1000);
   const isStale = revalidate && secondsAgo >= revalidate;
 
@@ -41,7 +36,7 @@ export default function CacheStatus({ timestamp, label = 'Data Age', revalidate 
       <div className="flex flex-col">
         <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">{label}</span>
         <span className="text-sm font-medium text-stone-800">
-          {secondsAgo}s ago <span className="text-stone-400 font-normal">({new Date(timestamp).toLocaleTimeString()})</span>
+          {secondsAgo}s ago <span className="text-stone-400 font-normal">({new Date(timestamp).toLocaleTimeString('en-GB', { timeZone: 'UTC' })})</span>
         </span>
         {revalidate && (
           <span className="text-[10px] text-stone-400">

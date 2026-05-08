@@ -52,7 +52,7 @@ export default function NodeRuntimePage() {
 
           <div className="p-4 bg-blue-50 border-l-4 border-blue-400 text-blue-800 text-sm">
             <strong>Bootcamp Tip:</strong> In the App Router, this is the default behavior.
-            You don't need any special configuration unless you want to switch to the Edge runtime.
+            You don&apos;t need any special configuration unless you want to switch to the Edge runtime.
           </div>
         </div>
       </div>

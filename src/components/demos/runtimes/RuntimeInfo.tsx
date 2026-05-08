@@ -56,7 +56,7 @@ export function RuntimeInfo() {
             </span>
           </li>
           <li className="flex justify-between items-center">
-            <span>Native Node Modules (e.g. 'os')</span>
+            <span>Native Node Modules (e.g. &apos;os&apos;)</span>
             <span className={info.apis.hasOs ? 'text-green-600' : 'text-red-600'}>
               {info.apis.hasOs ? '✅ Available' : '❌ Restricted'}
             </span>

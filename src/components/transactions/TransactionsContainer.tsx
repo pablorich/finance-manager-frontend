@@ -6,7 +6,39 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import Avatar from "@/components/ui/Avatar";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) => fetch(url).then((res) => {
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+});
+
+function DebouncedSearch({ initialValue, onSearch }: { initialValue: string; onSearch: (v: string) => void }) {
+  const [value, setValue] = useState(initialValue);
+
+  useEffect(() => {
+    if (value === initialValue) return;
+    const timer = setTimeout(() => onSearch(value), 500);
+    return () => clearTimeout(timer);
+  }, [value, initialValue, onSearch]);
+
+  return (
+    <div className="relative w-full md:w-64">
+      <label htmlFor="transaction-search" className="sr-only">Search transactions</label>
+      <input
+        id="transaction-search"
+        type="text"
+        placeholder="Search transactions"
+        className="w-full pl-4 pr-10 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
+      <div className="absolute right-3 top-2.5 text-slate-400">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+    </div>
+  );
+}
 
 interface TransactionsContainerProps {
   initialData: TransactionResponse;
@@ -23,32 +55,21 @@ export function TransactionsContainer({ initialData }: TransactionsContainerProp
   const category = searchParams.get('category') || 'All Categories';
   const sort = searchParams.get('sort') || 'Latest';
   const page = searchParams.get('page') || '1';
+  const pageNum = parseInt(page) || 1;
   
+  const swrParams = new URLSearchParams({ query, category, sort, page: String(pageNum) });
   const { data, isLoading } = useSWR<TransactionResponse>(
-    `/api/transactions?query=${query}&category=${category}&sort=${sort}&page=${page}`,
+    `/api/transactions?${swrParams.toString()}`,
     fetcher,
     { fallbackData: initialData }
   );
 
-  const [searchTerm, setSearchTerm] = useState(query);
-
   const handleParamChange = useCallback((name: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set(name, value);
-    params.set('page', '1'); // Reset page on filter change
+    params.set('page', '1');
     router.push(`/transactions?${params.toString()}`);
   }, [router, searchParams]);
-
-  // Debounce search update
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchTerm !== query) {
-        handleParamChange('query', searchTerm);
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [searchTerm, query, handleParamChange]);
 
   const transactions = data?.transactions || initialData.transactions;
   const hasMore = data?.hasMore ?? initialData.hasMore;
@@ -56,23 +77,12 @@ export function TransactionsContainer({ initialData }: TransactionsContainerProp
   return (
     <div className="space-y-6">
       <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-        <div className="flex flex-col md:flex-row gap-4 justify-between mb-8">
-          <div className="relative w-full md:w-64">
-            <label htmlFor="transaction-search" className="sr-only">Search transactions</label>
-            <input
-              id="transaction-search"
-              type="text"
-              placeholder="Search transactions"
-              className="w-full pl-4 pr-10 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <div className="absolute right-3 top-2.5 text-slate-400">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-          </div>
+          <div className="flex flex-col md:flex-row gap-4 justify-between mb-8">
+          <DebouncedSearch
+            key={query}
+            initialValue={query}
+            onSearch={(v) => handleParamChange('query', v)}
+          />
           
           <div className="flex gap-4">
             <div className="flex items-center gap-2">
@@ -152,7 +162,7 @@ export function TransactionsContainer({ initialData }: TransactionsContainerProp
                       </div>
                     </td>
                     <td className="py-4 text-slate-500">{t.category}</td>
-                    <td className="py-4 text-slate-500">{new Date(t.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                    <td className="py-4 text-slate-500">{new Date(t.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}</td>
                     <td className={`py-4 text-right font-bold ${t.amount > 0 ? 'text-green-600' : 'text-slate-900'}`}>
                       {t.amount > 0 ? '+' : ''}${Math.abs(t.amount).toFixed(2)}
                     </td>
@@ -168,10 +178,10 @@ export function TransactionsContainer({ initialData }: TransactionsContainerProp
             <button 
               className="px-4 py-2 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50"
               aria-label="Previous page"
-              disabled={parseInt(page) <= 1}
+              disabled={pageNum <= 1}
               onClick={() => {
                 const params = new URLSearchParams(searchParams.toString());
-                params.set('page', (parseInt(page) - 1).toString());
+                params.set('page', (pageNum - 1).toString());
                 router.push(`/transactions?${params.toString()}`);
               }}
             >
@@ -183,14 +193,14 @@ export function TransactionsContainer({ initialData }: TransactionsContainerProp
               disabled={!hasMore}
               onClick={() => {
                 const params = new URLSearchParams(searchParams.toString());
-                params.set('page', (parseInt(page) + 1).toString());
+                params.set('page', (pageNum + 1).toString());
                 router.push(`/transactions?${params.toString()}`);
               }}
             >
               Next
             </button>
           </div>
-          <p className="text-sm text-slate-500">Page {page}</p>
+          <p className="text-sm text-slate-500">Page {pageNum}</p>
         </div>
       </div>
     </div>

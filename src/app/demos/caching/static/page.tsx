@@ -53,8 +53,8 @@ export default async function StaticPage() {
         <p><strong>How to test:</strong></p>
         <ol className="list-decimal ml-4 space-y-1">
           <li>Refresh the page. The timestamp and value should remain identical.</li>
-          <li>Click "Purge Path". This triggers a server action that calls <code>revalidatePath</code>.</li>
-          <li>The page will refresh (or you can manual refresh) and you'll see a NEW timestamp and value.</li>
+          <li>Click &quot;Purge Path&quot;. This triggers a server action that calls <code>revalidatePath</code>.</li>
+          <li>The page will refresh (or you can manual refresh) and you&apos;ll see a NEW timestamp and value.</li>
         </ol>
       </div>
     </div>

@@ -71,7 +71,7 @@ class MockDatabase {
     return newTransaction;
   }
 
-  deleteTransaction(id: string) {
+  deleteTransaction(id: string): boolean {
     const index = this.transactions.findIndex(t => t.id === id);
     if (index !== -1) {
       const t = this.transactions[index];
@@ -82,7 +82,9 @@ class MockDatabase {
         this.balance.expenses -= Math.abs(t.amount);
       }
       this.transactions.splice(index, 1);
+      return true;
     }
+    return false;
   }
 
   getBudgets() {

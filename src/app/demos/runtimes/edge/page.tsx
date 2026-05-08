@@ -32,13 +32,13 @@ export default async function EdgeRuntimePage() {
   try {
     // We check for 'EdgeRuntime' which is a reliable global signal in Next.js Edge.
     // We avoid 'process.versions' to prevent build-time errors from the Edge checker.
-    // @ts-ignore - 'EdgeRuntime' is defined in the Edge runtime.
+    // @ts-expect-error - 'EdgeRuntime' is defined in the Edge runtime.
     if (typeof EdgeRuntime !== 'undefined') {
       osPlatform = 'Restricted: Node.js API not supported';
     } else {
       osPlatform = 'Node.js detected (Simulated/Local)';
     }
-  } catch (e) {
+  } catch {
     osPlatform = 'Error: Node.js API not supported in Edge';
   }
   return (

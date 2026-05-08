@@ -1,6 +1,5 @@
 import { getTransactions } from "@/lib/data";
 import Link from "next/link";
-import Image from "next/image";
 
 export async function RecentTransactions() {
   const { transactions } = await getTransactions();

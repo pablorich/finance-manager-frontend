@@ -12,6 +12,7 @@ async function getDynamicData() {
     // We can also use cache: 'no-store' for fetch-level dynamic behavior
     cache: 'no-store',
   });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }
 

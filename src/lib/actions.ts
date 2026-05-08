@@ -23,7 +23,7 @@ export type ActionState = {
   success: boolean;
   message: string;
   errors?: Record<string, string[]>;
-  data?: any;
+  data?: unknown;
 };
 
 /**
@@ -31,6 +31,7 @@ export type ActionState = {
  */
 export async function revalidateAction(path: string = '/demos/actions', tag: string = 'transactions') {
   revalidatePath(path);
+  revalidatePath('/overview');
   revalidateTag(tag, 'max');
 }
 
@@ -90,7 +91,8 @@ export async function createTransaction(prevState: ActionState | null, formData:
       success: true,
       message: 'Transaction created successfully!',
     };
-  } catch (e) {
+  } catch (error) {
+    console.error('createTransaction failed:', error);
     return {
       success: false,
       message: 'Failed to create transaction',
@@ -103,10 +105,14 @@ export async function createTransaction(prevState: ActionState | null, formData:
  */
 export async function deleteTransaction(id: string): Promise<ActionState> {
   try {
-    mockDb.deleteTransaction(id);
+    const deleted = mockDb.deleteTransaction(id);
+    if (!deleted) {
+      return { success: false, message: 'Transaction not found' };
+    }
     await revalidateAction();
     return { success: true, message: 'Transaction deleted' };
-  } catch (e) {
+  } catch (error) {
+    console.error('deleteTransaction failed:', error);
     return { success: false, message: 'Failed to delete transaction' };
   }
 }
@@ -119,7 +125,8 @@ export async function resetDatabase(): Promise<ActionState> {
     mockDb.reset();
     await revalidateAction();
     return { success: true, message: 'Database reset' };
-  } catch (e) {
+  } catch (error) {
+    console.error('resetDatabase failed:', error);
     return { success: false, message: 'Failed to reset database' };
   }
 }
