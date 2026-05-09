@@ -37,3 +37,9 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 For detailed instructions on how to deploy this project, check our [Deployment Guide](./DEPLOYMENT.md).
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme).
+
+## Planner
+
+Project board:
+
+- [Microsoft Planner Board](https://planner.cloud.microsoft/webui/plan/I24GqwroBUa5GAyRuJpzg2UACHYZ/view/board?tid=d867a851-bf46-47f7-8cd4-b768453c6b78)
