@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath, revalidateTag } from 'next/cache';
+import type { Transaction } from './data';
 import { mockDb } from './mock-db';
 
 /**
@@ -23,13 +24,16 @@ export type ActionState = {
   success: boolean;
   message: string;
   errors?: Record<string, string[]>;
-  data?: unknown;
+  data?: Transaction;
 };
 
 /**
  * Helper to standardise revalidation after an action
  */
-export async function revalidateAction(path: string = '/demos/actions', tag: string = 'transactions') {
+export async function revalidateAction(
+  path: string = '/demos/actions',
+  tag: string = 'transactions'
+) {
   revalidatePath(path);
   revalidatePath('/overview');
   revalidateTag(tag, 'max');
@@ -38,7 +42,10 @@ export async function revalidateAction(path: string = '/demos/actions', tag: str
 /**
  * Server Action: Create a new transaction
  */
-export async function createTransaction(prevState: ActionState | null, formData: FormData): Promise<ActionState> {
+export async function createTransaction(
+  prevState: ActionState | null,
+  formData: FormData
+): Promise<ActionState> {
   // Simulate network delay
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -78,7 +85,7 @@ export async function createTransaction(prevState: ActionState | null, formData:
   }
 
   try {
-    mockDb.addTransaction({
+    const transaction = mockDb.addTransaction({
       name,
       amount,
       category,
@@ -90,6 +97,7 @@ export async function createTransaction(prevState: ActionState | null, formData:
     return {
       success: true,
       message: 'Transaction created successfully!',
+      data: transaction,
     };
   } catch (error) {
     console.error('createTransaction failed:', error);
@@ -103,8 +111,19 @@ export async function createTransaction(prevState: ActionState | null, formData:
 /**
  * Server Action: Delete a transaction
  */
-export async function deleteTransaction(id: string): Promise<ActionState> {
+export async function deleteTransaction(
+  id: string,
+  shouldFail: boolean = false
+): Promise<ActionState> {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   try {
+    if (shouldFail) {
+      return {
+        success: false,
+        message: 'A simulated server error occurred. Transaction not deleted.',
+      };
+    }
+
     const deleted = mockDb.deleteTransaction(id);
     if (!deleted) {
       return { success: false, message: 'Transaction not found' };

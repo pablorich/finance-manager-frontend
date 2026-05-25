@@ -78,7 +78,11 @@ export const getUserSettings = async () => {
   };
 };
 
-export const getBudgetsWithSettings = async (_settings: { currency: string; theme: string; budgetExceededAlert: boolean }): Promise<Budget[]> => {
+export const getBudgetsWithSettings = async (_settings: {
+  currency: string;
+  theme: string;
+  budgetExceededAlert: boolean;
+}): Promise<Budget[]> => {
   // Simulate logic dependent on settings
   void _settings;
   await delay();
@@ -96,7 +100,7 @@ export const getPots = async (): Promise<Pot[]> => {
 };
 
 export const getTransactions = async (
-  query: string = '', 
+  query: string = '',
   page: number = 1,
   category: string = 'All Categories',
   sort: string = 'Latest'
@@ -105,18 +109,19 @@ export const getTransactions = async (
   const allTransactions = mockDb.getTransactions();
 
   let filtered = [...allTransactions];
-  
+
   // Filter by search query
   if (query) {
-    filtered = filtered.filter(t => 
-      t.name.toLowerCase().includes(query.toLowerCase()) || 
-      t.category.toLowerCase().includes(query.toLowerCase())
+    filtered = filtered.filter(
+      (t) =>
+        t.name.toLowerCase().includes(query.toLowerCase()) ||
+        t.category.toLowerCase().includes(query.toLowerCase())
     );
   }
 
   // Filter by category
   if (category !== 'All Categories') {
-    filtered = filtered.filter(t => t.category === category);
+    filtered = filtered.filter((t) => t.category === category);
   }
 
   // Sort
@@ -143,7 +148,7 @@ export const getTransactions = async (
   return {
     transactions,
     totalCount,
-    hasMore
+    hasMore,
   };
 };
 
@@ -154,7 +159,7 @@ export const getOverviewData = async () => {
     getBalance(),
     getTransactions(),
     getBudgets(),
-    getPots()
+    getPots(),
   ]);
   return { balance, transactions: transData.transactions, budgets, pots };
 };

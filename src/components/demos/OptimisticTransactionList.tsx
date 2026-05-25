@@ -1,77 +1,56 @@
 'use client';
 
-import { useOptimistic, startTransition, useEffect } from 'react';
-import { Transaction } from '@/lib/data';
-import { deleteTransaction } from '@/lib/actions';
+import type { Transaction } from '@/lib/data';
 import Avatar from '@/components/ui/Avatar';
+import Icon from '@/components/ui/Icon';
 
 interface OptimisticTransactionListProps {
-  initialTransactions: Transaction[];
+  transactions: Transaction[];
+  onDelete: (transaction: Transaction, mode?: 'success' | 'fail') => void;
 }
 
 export default function OptimisticTransactionList({
-  initialTransactions,
+  transactions,
+  onDelete,
 }: OptimisticTransactionListProps) {
-  const [optimisticTransactions, setOptimisticTransactions] = useOptimistic(
-    initialTransactions,
-    (state, { action, payload }: { action: 'delete' | 'add'; payload: string | Transaction }) => {
-      if (action === 'delete') {
-        return state.filter((t) => t.id !== payload);
-      }
-      if (action === 'add' && typeof payload !== 'string') {
-        return [payload, ...state];
-      }
-      return state;
-    }
-  );
-
-  // Expose the optimistic adder via window for verification/integration demo
-  // In a real app, this would be passed via context or props to the form.
-  // Move to useEffect to avoid side effects in render.
-  useEffect(() => {
-    window.addOptimisticTransaction = (transaction: Transaction) => {
-      startTransition(() => {
-        setOptimisticTransactions({ action: 'add', payload: transaction });
-      });
-    };
-    return () => {
-      delete window.addOptimisticTransaction;
-    };
-  }, [setOptimisticTransactions]);
-
-  const handleDelete = async (id: string) => {
-    startTransition(async () => {
-      setOptimisticTransactions({ action: 'delete', payload: id });
-      const result = await deleteTransaction(id);
-      if (!result.success) {
-        console.error('Delete failed:', result.message);
-      }
-    });
-  };
+  const pendingCount = transactions.filter(
+    (transaction) => transaction.isPending
+  ).length;
 
   return (
     <div className="rounded-xl bg-white p-6 shadow-sm">
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-grey-900">Recent Transactions</h2>
-        <span className="text-xs text-grey-500">
-          Showing {optimisticTransactions.length} items
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-grey-900">Optimistic Ledger</h2>
+          <p className="text-xs text-grey-500">
+            Showing {transactions.length} items
+            {pendingCount > 0 ? `, ${pendingCount} pending` : ''}
+          </p>
+        </div>
+        <span className="inline-flex items-center gap-1 rounded-full bg-grey-100 px-3 py-1 text-xs font-bold text-grey-500">
+          <Icon name="actions" className="h-3.5 w-3.5" />
+          useOptimistic preview
         </span>
       </div>
 
       <div className="space-y-4">
-        {optimisticTransactions.length === 0 ? (
-          <p className="py-10 text-center text-sm text-grey-500">No transactions found.</p>
+        {transactions.length === 0 ? (
+          <p className="py-10 text-center text-sm text-grey-500">
+            No transactions found.
+          </p>
         ) : (
-          optimisticTransactions.map((transaction) => (
+          transactions.map((transaction) => (
             <div
               key={transaction.id}
-              className={`flex items-center justify-between border-b border-grey-100 pb-4 last:border-0 last:pb-0 ${
-                transaction.isPending === true ? 'opacity-50' : ''
+              className={`flex flex-col gap-4 rounded-lg border p-4 transition-colors sm:flex-row sm:items-center sm:justify-between ${
+                transaction.isPending === true
+                  ? 'border-green-600 bg-green-50'
+                  : 'border-grey-100 bg-white'
               }`}
             >
               <div className="flex items-center gap-4">
-                <Avatar 
-                  src={transaction.avatar} 
+                <Avatar
+                  src={transaction.avatar}
                   alt={transaction.name}
                   width={40}
                   height={40}
@@ -79,27 +58,66 @@ export default function OptimisticTransactionList({
                   fallbackText={transaction.name.charAt(0)}
                 />
                 <div>
-                  <h3 className="text-sm font-bold text-grey-900">{transaction.name}</h3>
-                  <p className="text-xs text-grey-500">{transaction.category}</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="text-sm font-bold text-grey-900">
+                      {transaction.name}
+                    </h3>
+                    {transaction.isPending === true ? (
+                      <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-bold uppercase text-green-600">
+                        Pending
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="mt-1 text-xs text-grey-500">
+                    {transaction.category}
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-6">
-                <div className="text-right">
-                  <p className={`text-sm font-bold ${transaction.amount < 0 ? 'text-red-500' : 'text-green-700'}`}>
-                    {transaction.amount < 0 ? '-' : '+'}${Math.abs(transaction.amount).toFixed(2)}
+              <div className="flex items-center justify-between gap-6 sm:justify-end">
+                <div className="text-left sm:text-right">
+                  <p
+                    className={`text-sm font-bold ${transaction.amount < 0 ? 'text-red-500' : 'text-green-700'}`}
+                  >
+                    {transaction.amount < 0 ? '-' : '+'}$
+                    {Math.abs(transaction.amount).toFixed(2)}
                   </p>
                   <p className="text-xs text-grey-500">
-                    {new Date(transaction.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}
+                    {new Date(transaction.date).toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                      timeZone: 'UTC',
+                    })}
                   </p>
                 </div>
-                
-                <button
-                  onClick={() => handleDelete(transaction.id)}
-                  className="text-xs font-medium text-red-500 hover:underline"
-                >
-                  Delete
-                </button>
+
+                <div className="flex min-w-24 items-center justify-end gap-1">
+                  <button
+                    type="button"
+                    onClick={() => onDelete(transaction)}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-full text-red-500 transition-colors hover:bg-red-50"
+                    aria-label={`Delete ${transaction.name}`}
+                    title={transaction.isPending ? 'Cancel' : 'Delete'}
+                  >
+                    <Icon
+                      name={transaction.isPending ? 'cancel' : 'delete'}
+                      className="h-4 w-4"
+                    />
+                  </button>
+                  {!transaction.isPending &&
+                  !transaction.id.startsWith('temp-') ? (
+                    <button
+                      type="button"
+                      onClick={() => onDelete(transaction, 'fail')}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full text-amber-600 transition-colors hover:bg-amber-50"
+                      aria-label={`Simulate failed delete for ${transaction.name}`}
+                      title="Rollback test"
+                    >
+                      <Icon name="rollback" className="h-4 w-4" />
+                    </button>
+                  ) : null}
+                </div>
               </div>
             </div>
           ))
